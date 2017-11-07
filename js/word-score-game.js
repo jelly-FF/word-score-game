@@ -103,6 +103,9 @@ var BAG_OF_LETTERS = [
 
 var YOUR_HAND = new Array();
 var SCORE = 0;
+
+
+
 function startGame() {
 	addNumbersFromBag();
 	displayHand();
@@ -110,30 +113,49 @@ function startGame() {
 };
 
 
-
 function addNumbersFromBag(){
 	console.log("your hand has:" + YOUR_HAND.length);
-	for(i=YOUR_HAND.length; i < 7; i++){
-		YOUR_HAND[i] = getAvailableLetter();
+	// If no letter in the bag and no letter in your hand, Game Over.
+	if (BAG_OF_LETTERS.length) {
+		for(i=YOUR_HAND.length; i < 7; i++){
+			if (BAG_OF_LETTERS.length) {
+				YOUR_HAND[i] = getAvailableLetter();
+			} else {
+				break;
+			}
+		}
+	} else {
+		if (YOUR_HAND.length) {
+			alert("These are the only letters left.");
+		} else {
+			$("#score-box").append("Game Over.");
+			$("#remaining").remove();
+			
+		}
 	}
+	
 	
 }
 
 
 function displayHand(){
 	console.log("your hand has:" + YOUR_HAND.length);
-	for (i = 0; i < YOUR_HAND.length; i++) {
+	for (i = 0; i < 7; i++) {
 
-		console.log("#letter-" + (i+1) +" set to " + YOUR_HAND[i].letter);
-		$( "#letter-" + (i+1)).addClass("letter-" + YOUR_HAND[i].letter);
-		$( "#points-" + (i+1)).addClass("points-" + YOUR_HAND[i].pointsWhenLettersUsed);
+		if (i < YOUR_HAND.length) {
+			console.log("#letter-" + (i+1) +" set to " + YOUR_HAND[i].letter);
+			$( "#letter-" + (i+1)).addClass("letter-" + YOUR_HAND[i].letter);
+			$( "#points-" + (i+1)).addClass("points-" + YOUR_HAND[i].pointsWhenLettersUsed);
 		
+			$( "#letter-" + (i+1)).html(YOUR_HAND[i].letter);
 		
+			$( "#points-" + (i+1)).html(YOUR_HAND[i].pointsWhenLettersUsed);
+		} else {
+			$( "#letter-" + (i+1)).html("&nbsp");
 		
+			$( "#points-" + (i+1)).html("&nbsp");
+		}
 		
-		$( "#letter-" + (i+1)).html(YOUR_HAND[i].letter);
-		
-		$( "#points-" + (i+1)).html(YOUR_HAND[i].pointsWhenLettersUsed);
 	}
 	
 }
@@ -149,8 +171,102 @@ function getAvailableLetter(){
 
 
 function findWordToUse(){
- //TODO Your job starts here.
-	alert("Your code needs to go here");	
+	// TODO Your job starts here.
+	// alert("Your code needs to go here");
+	var codeFoundWord = "";
+	var WordPoints = 0;
+	
+	var potentialWord = new Array();
+	var potentialWordPoints = new Array();
+	var potentialWordi = new Array();
+	var potentialWordPointsi = new Array();
+	var indexlist = new Array();
+	
+	var YOUR_HAND_no = YOUR_HAND.slice(0);
+	var no_index = 0;
+	for (i = 0; i < YOUR_HAND.length; i++) {
+		if (YOUR_HAND[i].letter == "_") {
+			YOUR_HAND_no.splice((i-no_index), 1);
+			no_index += 1;
+		}
+	}
+	
+	// YOUR_HAND.splice(ii, 1);
+	// YOUR_HAND[ii].letter
+	// var YOUR_HAND_clone = YOUR_HAND.slice(0);
+	
+	for (i = 0; i < YOUR_HAND_no.length; i++) {
+		
+			var wordLength = 0;
+			wordLength = potentialWordi.length;
+			if (!wordLength) {
+				for (a = 0; a < YOUR_HAND_no.length; a++) {
+					var Wordia = YOUR_HAND_no[a].letter;
+					var WordPointsia = YOUR_HAND_no[a].pointsWhenLettersUsed;
+					potentialWordi.push(Wordia);
+					potentialWordPointsi.push(WordPointsia);
+					var indexlisti = new Array();
+					indexlisti[0] = a;
+					indexlist.push(indexlisti);
+				}
+			} else {
+				for (ii = 0; ii < wordLength; ii++) {
+					var YOUR_HAND_clone = YOUR_HAND_no.slice(0);
+					for (b = 0; b < indexlist[ii].length; b++) {
+						var indexi = 0;
+						indexi = indexlist[ii][b];
+						YOUR_HAND_clone.splice(indexi,1);
+					}
+					for (a = 0; a < YOUR_HAND_clone.length; a++) {
+						var Wordiia = potentialWordi[ii]+YOUR_HAND_clone[a].letter;
+						var WordPointsiia = potentialWordPointsi[ii]+YOUR_HAND_clone[a].pointsWhenLettersUsed;
+						potentialWordi.push(Wordiia);
+						potentialWordPointsi.push(WordPointsiia);
+						var indexlisti = indexlist[ii].slice(0);
+						indexlisti.push(a);
+						indexlist.push(indexlisti);
+					}
+					
+				}
+			}
+			potentialWordi.splice(0,wordLength);
+			potentialWordPointsi.splice(0,wordLength);
+			indexlist.splice(0,wordLength);
+		var Wordi = potentialWordi.slice(0);
+		var WordPointsi = potentialWordPointsi.slice(0);
+		potentialWord.push(Wordi);
+		potentialWordPoints.push(WordPointsi);
+	}
+	
+	for (i = 0; i < potentialWord.length; i++) {
+		var a = i;
+		for (ii = 0; ii < potentialWord[a].length; ii++) {
+			var aa = ii;
+			var codeFoundWordi = potentialWord[a][aa];
+			var WordPointsi = potentialWordPoints[a][aa];
+			if(isThisAWord(codeFoundWordi)){
+				if (WordPointsi > WordPoints) {
+					codeFoundWord = codeFoundWordi;
+					WordPoints = WordPointsi;
+				} else if (WordPointsi == WordPoints) {
+					if (codeFoundWordi.length < codeFoundWord.length) {
+						codeFoundWord = codeFoundWordi;
+						WordPoints = WordPointsi;
+					}
+				}
+				
+			}
+		}
+	}
+	
+	if (WordPoints) {
+		if(haveLettersForWord(codeFoundWord)){
+			 successfullyAddedWord(codeFoundWord);
+		}
+	} else {
+		alert("No word with a point can be found! Please retire your hand and good luck.");
+	}
+	
 }
 function humanFindWordToUse(){
 	
