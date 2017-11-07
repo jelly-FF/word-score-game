@@ -105,11 +105,9 @@ var YOUR_HAND = new Array();
 var SCORE = 0;
 
 
-
 function startGame() {
 	addNumbersFromBag();
 	displayHand();
-	
 };
 
 
@@ -130,18 +128,14 @@ function addNumbersFromBag(){
 		} else {
 			$("#score-box").append("Game Over.");
 			$("#remaining").remove();
-			
 		}
 	}
-	
-	
 }
 
 
 function displayHand(){
 	console.log("your hand has:" + YOUR_HAND.length);
 	for (i = 0; i < 7; i++) {
-
 		if (i < YOUR_HAND.length) {
 			console.log("#letter-" + (i+1) +" set to " + YOUR_HAND[i].letter);
 			$( "#letter-" + (i+1)).addClass("letter-" + YOUR_HAND[i].letter);
@@ -191,12 +185,7 @@ function findWordToUse(){
 		}
 	}
 	
-	// YOUR_HAND.splice(ii, 1);
-	// YOUR_HAND[ii].letter
-	// var YOUR_HAND_clone = YOUR_HAND.slice(0);
-	
 	for (i = 0; i < YOUR_HAND_no.length; i++) {
-		
 			var wordLength = 0;
 			wordLength = potentialWordi.length;
 			if (!wordLength) {
@@ -226,7 +215,6 @@ function findWordToUse(){
 						indexlisti.push(a);
 						indexlist.push(indexlisti);
 					}
-					
 				}
 			}
 			potentialWordi.splice(0,wordLength);
@@ -254,7 +242,6 @@ function findWordToUse(){
 						WordPoints = WordPointsi;
 					}
 				}
-				
 			}
 		}
 	}
@@ -269,7 +256,6 @@ function findWordToUse(){
 	
 }
 function humanFindWordToUse(){
-	
 	 var humanFoundWord = $( "#human-word-input").val();
 	 console.log("Checking human workd of:" + humanFoundWord);
 	 if(isThisAWord(humanFoundWord)){
@@ -281,7 +267,6 @@ function humanFindWordToUse(){
 	 }else{
 		 alert(humanFoundWord + " is not a valid word.");
 	 }
-		
 }
 
 
@@ -292,7 +277,6 @@ function successfullyAddedWord(foundWord){
 	addNumbersFromBag();
 	displayHand();
 	$( "#human-word-input").val('');
-	
 }
 
 function addToScore(letterToAddToScore){
@@ -303,7 +287,6 @@ function addToScore(letterToAddToScore){
 
 
 function takeOutUsedLetters(){
-	
 	for(ii=0; ii < YOUR_HAND.length; ii++){
 		if(YOUR_HAND[ii].used){
 			addToScore(YOUR_HAND[ii]);
@@ -313,7 +296,6 @@ function takeOutUsedLetters(){
 			console.log(YOUR_HAND[ii].letter + "<- Not Used");
 		}
 	}
-	
 }
 
 function haveLettersForWord(aProposedWord){
@@ -358,7 +340,6 @@ function haveLettersForWord(aProposedWord){
 
 
 function resetHand(){
-	
 	for(ii=0; ii<YOUR_HAND.length; ii++){
 		YOUR_HAND[i].used = false;
 	}
