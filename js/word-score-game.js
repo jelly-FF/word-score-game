@@ -101,6 +101,8 @@ var BAG_OF_LETTERS = [
 		new Letter('Z', 1, 10),
 ];
 
+var unique_letter = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+
 var YOUR_HAND = new Array();
 var SCORE = 0;
 
@@ -128,6 +130,7 @@ function addNumbersFromBag(){
 		} else {
 			$("#score-box").append("Game Over.");
 			$("#remaining").remove();
+			
 		}
 	}
 }
@@ -136,6 +139,7 @@ function addNumbersFromBag(){
 function displayHand(){
 	console.log("your hand has:" + YOUR_HAND.length);
 	for (i = 0; i < 7; i++) {
+
 		if (i < YOUR_HAND.length) {
 			console.log("#letter-" + (i+1) +" set to " + YOUR_HAND[i].letter);
 			$( "#letter-" + (i+1)).addClass("letter-" + YOUR_HAND[i].letter);
@@ -176,22 +180,15 @@ function findWordToUse(){
 	var potentialWordPointsi = new Array();
 	var indexlist = new Array();
 	
-	var YOUR_HAND_no = YOUR_HAND.slice(0);
-	var no_index = 0;
-	for (i = 0; i < YOUR_HAND.length; i++) {
-		if (YOUR_HAND[i].letter == "_") {
-			YOUR_HAND_no.splice((i-no_index), 1);
-			no_index += 1;
-		}
-	}
 	
-	for (i = 0; i < YOUR_HAND_no.length; i++) {
+	for (i = 0; i < YOUR_HAND.length; i++) {
+		
 			var wordLength = 0;
 			wordLength = potentialWordi.length;
 			if (!wordLength) {
-				for (a = 0; a < YOUR_HAND_no.length; a++) {
-					var Wordia = YOUR_HAND_no[a].letter;
-					var WordPointsia = YOUR_HAND_no[a].pointsWhenLettersUsed;
+				for (a = 0; a < YOUR_HAND.length; a++) {
+					var Wordia = YOUR_HAND[a].letter;
+					var WordPointsia = YOUR_HAND[a].pointsWhenLettersUsed;
 					potentialWordi.push(Wordia);
 					potentialWordPointsi.push(WordPointsia);
 					var indexlisti = new Array();
@@ -200,7 +197,7 @@ function findWordToUse(){
 				}
 			} else {
 				for (ii = 0; ii < wordLength; ii++) {
-					var YOUR_HAND_clone = YOUR_HAND_no.slice(0);
+					var YOUR_HAND_clone = YOUR_HAND.slice(0);
 					for (b = 0; b < indexlist[ii].length; b++) {
 						var indexi = 0;
 						indexi = indexlist[ii][b];
@@ -215,6 +212,7 @@ function findWordToUse(){
 						indexlisti.push(a);
 						indexlist.push(indexlisti);
 					}
+					
 				}
 			}
 			potentialWordi.splice(0,wordLength);
@@ -242,6 +240,7 @@ function findWordToUse(){
 						WordPoints = WordPointsi;
 					}
 				}
+				
 			}
 		}
 	}
@@ -256,6 +255,7 @@ function findWordToUse(){
 	
 }
 function humanFindWordToUse(){
+	
 	 var humanFoundWord = $( "#human-word-input").val();
 	 console.log("Checking human workd of:" + humanFoundWord);
 	 if(isThisAWord(humanFoundWord)){
@@ -267,6 +267,7 @@ function humanFindWordToUse(){
 	 }else{
 		 alert(humanFoundWord + " is not a valid word.");
 	 }
+		
 }
 
 
@@ -277,6 +278,7 @@ function successfullyAddedWord(foundWord){
 	addNumbersFromBag();
 	displayHand();
 	$( "#human-word-input").val('');
+	
 }
 
 function addToScore(letterToAddToScore){
@@ -287,6 +289,7 @@ function addToScore(letterToAddToScore){
 
 
 function takeOutUsedLetters(){
+	
 	for(ii=0; ii < YOUR_HAND.length; ii++){
 		if(YOUR_HAND[ii].used){
 			addToScore(YOUR_HAND[ii]);
@@ -296,6 +299,7 @@ function takeOutUsedLetters(){
 			console.log(YOUR_HAND[ii].letter + "<- Not Used");
 		}
 	}
+	
 }
 
 function haveLettersForWord(aProposedWord){
@@ -328,6 +332,7 @@ function haveLettersForWord(aProposedWord){
 				}
 			}
 		}
+			
 		
 		if(!foundLetter){
 			resetHand();
@@ -340,12 +345,39 @@ function haveLettersForWord(aProposedWord){
 
 
 function resetHand(){
+	
 	for(ii=0; ii<YOUR_HAND.length; ii++){
 		YOUR_HAND[i].used = false;
 	}
 }
 
 function isThisAWord(aProposedWord){
+	
+	// the _ logic, will be a lot slower.
+	for(a=0; a<aProposedWord.length; a++){	
+		if (aProposedWord[a] == "_") {
+			for (ai=0; ai<unique_letter.length; ai++){
+				var aProposedWordi = "";
+				aProposedWordi = aProposedWord.substring(0, a) + unique_letter[ai] + aProposedWord.substring((a+1))
+				var ai_index = aProposedWordi.indexOf("_");
+				if (ai_index > -1) {
+					for (aii=0; aii<unique_letter.length; aii++){
+						var aProposedWordii = "";
+						aProposedWordii = aProposedWordi.substring(0, ai_index) + unique_letter[aii] + aProposedWordi.substring((ai_index+1));
+						if (Word_List.isInList(aProposedWordii)) {
+							return true;
+						}
+					}
+				} else {
+					if (Word_List.isInList(aProposedWordi)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	}
+	
 	  if (Word_List.isInList(aProposedWord)) {
 	      return true;
 	  }
