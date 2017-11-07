@@ -329,11 +329,23 @@ function haveLettersForWord(aProposedWord){
 					console.log("     " + YOUR_HAND[ii].letter + "<-Found");
 					YOUR_HAND[ii].used = true;
 					foundLetter = true;
-					
+					break;
 				}
 			}
 		}
 		
+		// the _ logic
+		if(!foundLetter){
+			for(a=0; a<YOUR_HAND.length; a++){
+				if (YOUR_HAND[a].letter == "_") {
+					if(!YOUR_HAND[a].used && !foundLetter){
+						YOUR_HAND[a].used = true;
+						foundLetter = true;
+						break;
+					}
+				}
+			}
+		}
 		
 		if(!foundLetter){
 			resetHand();
